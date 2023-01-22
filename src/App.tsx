@@ -1,37 +1,10 @@
-import { Box, Flex, Center, Heading, Button, Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { Box, Flex, Center, Heading, Stack } from "@chakra-ui/react";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
-
 import { createMachine, assign } from "xstate";
 import { useMachine } from "@xstate/react";
 
-/*
-## 需求:
-  - 完成比大小遊戲
-    - 遊戲流程
-      1. 按下 `Start Game` 按鈕會開始遊戲，`Start Game` 按鈕隨即消失
-      2. 左邊的卡片中的 `?` 會變成亂數產生的數字 A
-      3. 右邊的卡片下方會出現 `Higher` 和 `Lower` 的按鈕，讓 user 擇一點選
-      4. 當 user 點選 `Higher` 和 `Lower` 其中一個按鈕後，兩個按鈕隨即消失
-      5. 右邊的卡片中的 `?` 會變成亂數產生的數字 B
-      6. 比較兩邊的數字大小，然後根據 user 的選擇，顯示遊戲結果在卡片下方，並出現 `Play Again` 按鈕
-      7. 當 user 按下 `Play Again` 按鈕後，右邊的卡片中的數字 B 會變回 `?`
-      8. 左邊的數字 A 會重新亂數產生，並回到上方第三步，繼續新的一場遊戲
-    - 遊戲規則
-      - 兩邊的數字都是隨機產生 1~10 之間的數字
-      - 當 B > A 時，且 user 選擇 `Higher`，則遊戲結果為 WIN
-      - 當 B > A 時，且 user 選擇 `Lower`，則遊戲結果為 LOSE
-      - 當 B < A 時，且 user 選擇 `Higher`，則遊戲結果為 LOSE
-      - 當 B < A 時，且 user 選擇 `Lower`，則遊戲結果為 WIN
-      - 當 B = A 時，且 user 選擇 `Higher`，則遊戲結果為 LOSE
-      - 當 B = A 時，且 user 選擇 `Lower`，則遊戲結果為 LOSE
-## 加分項目:
-  - 重構 components
-  - 使用 XState 完成遊戲的狀態切換及邏輯
-    - 文件：https://xstate.js.org/docs/
-
-
-*/
+import { Card, Button } from "./components";
 
 const generateRandomNumber = () => Math.floor(Math.random() * 10) + 1;
 
@@ -49,32 +22,6 @@ const calculateIsUserWin = (
   }
 
   return false;
-};
-
-interface CardProps {
-  color: string;
-  content: string | number;
-}
-
-const Card = (props: CardProps) => {
-  const { color, content } = props;
-
-  return (
-    <Center
-      w="full"
-      h="150px"
-      px="24px"
-      py="16px"
-      bgColor="white"
-      borderRadius="md"
-      boxShadow="lg"
-      flex={1}
-    >
-      <Heading fontSize="54px" color={color}>
-        {content}
-      </Heading>
-    </Center>
-  );
 };
 
 interface ContextProps {
@@ -98,6 +45,11 @@ const App = () => {
         on: {
           start: {
             target: "start",
+            actions: assign({
+              computerNumber: (context: ContextProps, event) =>
+                event.computerNumber,
+              // userNumber: (context: ContextProps, event) => 0,
+            }),
           },
         },
       },
@@ -106,11 +58,8 @@ const App = () => {
           choosed: {
             target: "choosed",
             actions: assign({
-              userChoice: (context: ContextProps, event) => {
-                console.log("@event", event.value);
-
-                return event.value;
-              },
+              userChoice: (context: ContextProps, event) => event.userChoice,
+              userNumber: (context: ContextProps, event) => event.userNumber,
             }),
           },
         },
@@ -121,9 +70,9 @@ const App = () => {
             target: "end",
             actions: assign({
               isUserWin: (context: ContextProps, event) => {
-                console.log("@event", event.value);
+                console.log("@event", event.isUserWin);
 
-                return event.value;
+                return event.isUserWin;
               },
             }),
           },
@@ -133,32 +82,36 @@ const App = () => {
         on: {
           start: {
             target: "start",
+            actions: assign({
+              computerNumber: (context: ContextProps, event) =>
+                event.computerNumber,
+              userNumber: (context: ContextProps, event) => 0,
+            }),
           },
         },
       },
     },
   });
 
-  const [state, send, service] = useMachine(gameMachine);
+  const [state, send] = useMachine(gameMachine);
 
-  const [computerNumber, setComputerNumber] = useState(0);
-  const [userNumber, setUserNumber] = useState(0);
-  const [isUserWin, setIsUserWin] = useState(false);
+  const computerNumber = state.context.computerNumber;
+  const userNumber = state.context.userNumber;
+  const isUserWin = state.context.isUserWin;
 
-  const startGame = () => {
-    send("start");
-  };
+  console.log("userNumber", userNumber);
 
-  const onHigherLowerBtnClick = (value: string) => {};
+  const startGame = () =>
+    send("start", { computerNumber: generateRandomNumber(), userNumber: 0 });
+  console.log("@state.value", state.value);
 
-  useEffect(() => {
-    const randomNumber = generateRandomNumber();
-    const isGameStart = state.value === "start";
-    isGameStart && setComputerNumber(randomNumber);
-    const ischoosed = state.value === "choosed";
+  console.log("@state.context", state.context);
 
-    ischoosed && setUserNumber(randomNumber);
-  }, [state]);
+  // useEffect(() => {
+  //   const randomNumber = generateRandomNumber();
+  //   const isGameStart = state.value === "start";
+  //   isGameStart && setComputerNumber(randomNumber);
+  // }, [state]);
 
   useEffect(() => {
     const gameResult = calculateIsUserWin(
@@ -166,45 +119,12 @@ const App = () => {
       userNumber,
       state.context.userChoice
     );
-    state.context.userChoice && setIsUserWin(gameResult);
+    state.context.userChoice && send("end", { isUserWin: gameResult });
   }, [computerNumber, userNumber, state]);
-  console.log("isUserWin", isUserWin);
 
-  useEffect(() => {
-    const ischoosed = state.value === "choosed";
-    ischoosed && send("end");
-  }, [userNumber, isUserWin, state]);
-
-  const ButtonGroup = () => {
-    return (
-      <>
-        <Button
-          mt="32px"
-          colorScheme="twitter"
-          leftIcon={<RiArrowUpSLine />}
-          isFullWidth
-          onClick={() => {
-            // send("choosed", { value: "higher" });
-            service.send("choosed", { value: "higher" });
-            // interpreter.send({ type: "choosed", value: "higher" });
-          }}
-        >
-          Higher
-        </Button>
-        <Button
-          mt="8px"
-          colorScheme="facebook"
-          leftIcon={<RiArrowDownSLine />}
-          isFullWidth
-          onClick={() => {
-            send("choosed", { value: "lower" });
-          }}
-        >
-          Lower
-        </Button>
-      </>
-    );
-  };
+  const isInactive = state.value === "inactive";
+  const isStart = state.value === "start";
+  const isEnd = state.value === "end";
 
   return (
     <Box bgColor="#f3f3f3" h="100vh">
@@ -226,34 +146,70 @@ const App = () => {
               <Card color="blue.500" content={userNumber || "?"} />
 
               {/* `Higher` and `Lower` buttons UI */}
-              <ButtonGroup />
+
+              {isStart && (
+                <>
+                  <Button
+                    onClick={() =>
+                      send("choosed", {
+                        userChoice: "higher",
+                        userNumber: generateRandomNumber(),
+                      })
+                    }
+                    colorScheme="twitter"
+                    leftIcon={<RiArrowUpSLine />}
+                    text="Higher"
+                    marginTop="32px"
+                  />
+                  <Button
+                    onClick={() =>
+                      send("choosed", {
+                        userChoice: "lower",
+                        userNumber: generateRandomNumber(),
+                      })
+                    }
+                    colorScheme="facebook"
+                    leftIcon={<RiArrowDownSLine />}
+                    text="Lower"
+                    marginTop="8px"
+                  />
+                </>
+              )}
             </Flex>
           </Flex>
 
-          <Box mt="64px">
-            <Button colorScheme="blue" onClick={startGame}>
-              Start Game
-            </Button>
-          </Box>
+          {isInactive && (
+            <Box mt="64px">
+              <Button
+                onClick={startGame}
+                colorScheme="blue"
+                text="Start Game"
+              />
+            </Box>
+          )}
 
           {/* Game result UI */}
-          {/* <Stack mt="24px" spacing="16px">
-            <Heading color="twitter.300" align="center">
-              WIN!
-            </Heading>
-            <Heading color="red.300" align="center">
-              LOSE!
-            </Heading>
-
-            <Button
-              colorScheme="blue"
-              onClick={() => {
-                // TODO: Clear game result and start a new game
-              }}
-            >
-              Play Again
-            </Button>
-          </Stack> */}
+          {isEnd && (
+            <Stack mt="24px" spacing="16px">
+              {isUserWin ? (
+                <Heading color="twitter.300" align="center">
+                  WIN!
+                </Heading>
+              ) : (
+                <Heading color="red.300" align="center">
+                  LOSE!
+                </Heading>
+              )}
+              <Button
+                colorScheme="blue"
+                text=" Play Again"
+                onClick={() => {
+                  startGame();
+                  console.log("Clear game result and start a new game");
+                }}
+              />
+            </Stack>
+          )}
         </Flex>
       </Center>
     </Box>
