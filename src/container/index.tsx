@@ -58,7 +58,9 @@ const Game = () => {
               <Card color="blue.500" content={userNumber || "?"} />
               {isStart && (
                 <StartComponent
-                  onClick={(userChoice: string) => onChooseBtnClick(userChoice)}
+                  onClick={(userChoice?: string) =>
+                    onChooseBtnClick(userChoice ?? "")
+                  }
                 />
               )}
             </Flex>

@@ -1,11 +1,5 @@
 import { createMachine, assign } from "xstate";
-
-interface ContextProps {
-  computerNumber: number;
-  userNumber: number;
-  userChoice: string;
-  isUserWin: boolean;
-}
+import { ContextProps } from "../interface";
 
 export const gameMachine = createMachine<ContextProps>({
   initial: "inactive",

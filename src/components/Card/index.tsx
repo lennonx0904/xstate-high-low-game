@@ -1,9 +1,6 @@
 import { Center, Heading } from "@chakra-ui/react";
 
-interface CardProps {
-  color: string;
-  content: string | number;
-}
+import { CardProps } from "../../interface";
 
 const Card = (props: CardProps) => {
   const { color, content } = props;

@@ -1,12 +1,6 @@
 import { Button as ButtonComponent } from "@chakra-ui/react";
 
-interface ButtonProps {
-  onClick: () => void;
-  colorScheme: string;
-  text: string;
-  leftIcon?: JSX.Element;
-  marginTop?: string;
-}
+import { ButtonProps } from "../../interface";
 
 const Button = (props: ButtonProps) => {
   const { onClick, colorScheme, text, leftIcon, marginTop } = props;

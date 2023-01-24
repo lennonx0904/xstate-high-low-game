@@ -1,13 +1,9 @@
 import { Heading, Stack } from "@chakra-ui/react";
 
 import { Button } from "../components";
+import { StateComponentProps } from "../interface";
 
-interface ComponentProps {
-  onClick: (arg?: string) => void;
-  isUserWin?: boolean;
-}
-
-const EndComponent = (props: ComponentProps) => {
+const EndComponent = (props: StateComponentProps) => {
   const { onClick, isUserWin } = props;
 
   return (
