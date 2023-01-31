@@ -1,8 +1,9 @@
 import { createMachine, assign } from "xstate";
 import { ContextProps } from "../interface";
+import { INACTIVE, START, CHOOSED, END } from "constant";
 
 export const gameMachine = createMachine<ContextProps>({
-  initial: "inactive",
+  initial: INACTIVE,
   context: {
     computerNumber: 0,
     userNumber: 0,
@@ -10,10 +11,10 @@ export const gameMachine = createMachine<ContextProps>({
     isUserWin: false,
   },
   states: {
-    inactive: {
+    [INACTIVE]: {
       on: {
-        start: {
-          target: "start",
+        START: {
+          target: START,
           actions: assign({
             computerNumber: (context: ContextProps, event) =>
               event.computerNumber,
@@ -21,10 +22,10 @@ export const gameMachine = createMachine<ContextProps>({
         },
       },
     },
-    start: {
+    [START]: {
       on: {
-        choosed: {
-          target: "choosed",
+        [CHOOSED]: {
+          target: CHOOSED,
           actions: assign({
             userChoice: (context: ContextProps, event) => event.userChoice,
             userNumber: (context: ContextProps, event) => event.userNumber,
@@ -32,20 +33,20 @@ export const gameMachine = createMachine<ContextProps>({
         },
       },
     },
-    choosed: {
+    [CHOOSED]: {
       on: {
-        end: {
-          target: "end",
+        [END]: {
+          target: END,
           actions: assign({
             isUserWin: (context: ContextProps, event) => event.isUserWin,
           }),
         },
       },
     },
-    end: {
+    [END]: {
       on: {
-        start: {
-          target: "start",
+        [START]: {
+          target: START,
           actions: assign({
             computerNumber: (context: ContextProps, event) =>
               event.computerNumber,

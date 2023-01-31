@@ -2,9 +2,10 @@ import { useEffect } from "react";
 import { Box, Flex, Center, Heading } from "@chakra-ui/react";
 import { useMachine } from "@xstate/react";
 
-import { Card } from "../components";
-import { gameMachine } from "../machine";
-import { generateRandomNumber, calculateIsUserWin } from "../utils";
+import { Card } from "components";
+import { gameMachine } from "machine";
+import { generateRandomNumber, calculateIsUserWin } from "utils";
+import { INACTIVE, START, CHOOSED, END } from "constant";
 import StartComponent from "./start";
 import InactiveComponent from "./inactive";
 import EndComponent from "./end";
@@ -16,15 +17,15 @@ const Game = () => {
   const userNumber = state.context.userNumber;
   const isUserWin = state.context.isUserWin;
 
-  const isInactive = state.value === "inactive";
-  const isStart = state.value === "start";
-  const isEnd = state.value === "end";
+  const isInactive = state.value === INACTIVE;
+  const isStart = state.value === START;
+  const isEnd = state.value === END;
 
   const onStartBtnClick = () =>
-    send("start", { computerNumber: generateRandomNumber(), userNumber: 0 });
+    send(START, { computerNumber: generateRandomNumber(), userNumber: 0 });
 
   const onChooseBtnClick = (userChoice: string) =>
-    send("choosed", {
+    send(CHOOSED, {
       userChoice,
       userNumber: generateRandomNumber(),
     });
@@ -35,7 +36,7 @@ const Game = () => {
       userNumber,
       state.context.userChoice
     );
-    state.context.userChoice && send("end", { isUserWin });
+    state.context.userChoice && send(END, { isUserWin });
   }, [computerNumber, userNumber, state]);
 
   return (
