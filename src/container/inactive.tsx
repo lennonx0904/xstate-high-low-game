@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
-import { Button } from "../components";
-import { StateComponentProps } from "../interface";
+import { Button } from "components";
+import { StateComponentProps } from "interface";
 
 const InactiveComponent = (props: StateComponentProps) => {
   const { onClick } = props;

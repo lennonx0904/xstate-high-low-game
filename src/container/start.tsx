@@ -1,7 +1,7 @@
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 
-import { Button } from "../components";
-import { StateComponentProps } from "../interface";
+import { Button } from "components";
+import { StateComponentProps } from "interface";
 
 const StartComponent = (props: StateComponentProps) => {
   const { onClick } = props;

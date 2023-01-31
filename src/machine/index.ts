@@ -1,5 +1,5 @@
 import { createMachine, assign } from "xstate";
-import { ContextProps } from "../interface";
+import { ContextProps } from "interface";
 import { INACTIVE, START, CHOOSED, END } from "constant";
 
 export const gameMachine = createMachine<ContextProps>({
