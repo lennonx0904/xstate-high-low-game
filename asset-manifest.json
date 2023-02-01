@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.js": "/xstate-practice/static/js/main.b6a02902.chunk.js",
+    "main.js.map": "/xstate-practice/static/js/main.b6a02902.chunk.js.map",
+    "runtime-main.js": "/xstate-practice/static/js/runtime-main.eb6902a6.js",
+    "runtime-main.js.map": "/xstate-practice/static/js/runtime-main.eb6902a6.js.map",
+    "static/js/2.28fb9298.chunk.js": "/xstate-practice/static/js/2.28fb9298.chunk.js",
+    "static/js/2.28fb9298.chunk.js.map": "/xstate-practice/static/js/2.28fb9298.chunk.js.map",
+    "index.html": "/xstate-practice/index.html",
+    "static/js/2.28fb9298.chunk.js.LICENSE.txt": "/xstate-practice/static/js/2.28fb9298.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.eb6902a6.js",
+    "static/js/2.28fb9298.chunk.js",
+    "static/js/main.b6a02902.chunk.js"
+  ]
+}
