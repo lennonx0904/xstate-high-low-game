@@ -1,5 +1,5 @@
 ## Demo
-[Demo Website](https://lennonx0904.github.io/xstate-practice/)
+[Demo Website](https://lennonx0904.github.io/xstate-high-low-game)
 
 ## Getting Started
 1. Install the dependencies.
